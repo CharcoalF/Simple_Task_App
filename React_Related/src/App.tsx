@@ -18,11 +18,15 @@ function App() {
       </GridItem>
 
       <Show above="lg">
-        <GridItem area="aside" bg="gold">
+        <GridItem area="aside">
+          {" "}
+          {/*change Aside color: bg="gold" */}
           Aside
         </GridItem>
       </Show>
-      <GridItem area="main" bg="dodgerblue">
+      <GridItem area="main">
+        {" "}
+        {/*change Main color: bg="dodgerblue" */}
         Main
       </GridItem>
     </Grid>
