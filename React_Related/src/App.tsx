@@ -1,5 +1,15 @@
 // Reference: https://v2.chakra-ui.com/docs/components/button/usage
-import { Box, Text, Grid, GridItem, Show, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Grid,
+  GridItem,
+  Show,
+  Button,
+  Input,
+  FormControl,
+  FormLabel,
+} from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
 import { Component } from "react";
 
@@ -20,6 +30,7 @@ interface AppProps {}
 
 interface AppState {
   notes: Note[]; // 用来存储笔记的数组
+  newNote: Note; // 新的记录数据
 }
 
 class App extends Component<AppProps, AppState> {
@@ -27,6 +38,16 @@ class App extends Component<AppProps, AppState> {
     super(props);
     this.state = {
       notes: [], // 初始化时，笔记数组为空
+      newNote: {
+        id: "",
+        Description: "",
+        Creation_Timestamp: "",
+        Due_date: "",
+        Last_Updated_Timestamp: "",
+        Priority: "",
+        Status: "",
+        Title: "",
+      },
     };
   }
 
@@ -46,13 +67,29 @@ class App extends Component<AppProps, AppState> {
     }
   }
 
+  // 处理输入框变化
+  handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof Note
+  ) => {
+    const { value } = e.target;
+    this.setState((prevState) => ({
+      newNote: {
+        ...prevState.newNote,
+        [field]: value, // 动态设置字段值
+      },
+    }));
+  };
+
   // 添加记录
   async addClick() {
-    // 确保获取的是正确的输入框值
-    var newNotes = (document.getElementById("newRecord") as HTMLInputElement)
-      .value;
+    const { newNote } = this.state;
     const data = new FormData();
-    data.append("newNotes", newNotes);
+
+    // 将所有字段添加到 FormData 中
+    for (let key in newNote) {
+      data.append(key, newNote[key as keyof Note]);
+    }
 
     fetch(this.API_URL + "/api/React_Related/AddNotes", {
       method: "POST",
@@ -68,7 +105,6 @@ class App extends Component<AppProps, AppState> {
 
   // 删除记录
   async deleteClick(id: string) {
-    // 确保 id 是 string 类型
     fetch(this.API_URL + "/api/React_Related/DeleteNote", {
       method: "DELETE",
       headers: {
@@ -85,7 +121,7 @@ class App extends Component<AppProps, AppState> {
   }
 
   render() {
-    const { notes } = this.state;
+    const { notes, newNote } = this.state;
 
     return (
       <Grid
@@ -108,11 +144,86 @@ class App extends Component<AppProps, AppState> {
               Notes
             </Text>
 
-            {/* 输入框用于添加记录 */}
+            {/* 添加新记录表单 */}
             <Box mb={4}>
-              <input id="newRecord" type="text" placeholder="Enter new note" />
+              <FormControl mb={2}>
+                <FormLabel htmlFor="Title">Title</FormLabel>
+                <Input
+                  id="Title"
+                  value={newNote.Title}
+                  onChange={(e) => this.handleInputChange(e, "Title")}
+                />
+              </FormControl>
+
+              <FormControl mb={2}>
+                <FormLabel htmlFor="Description">Description</FormLabel>
+                <Input
+                  id="Description"
+                  value={newNote.Description}
+                  onChange={(e) => this.handleInputChange(e, "Description")}
+                />
+              </FormControl>
+
+              <FormControl mb={2}>
+                <FormLabel htmlFor="Due_date">Due Date</FormLabel>
+                <Input
+                  id="Due_date"
+                  value={newNote.Due_date}
+                  onChange={(e) => this.handleInputChange(e, "Due_date")}
+                />
+              </FormControl>
+
+              <FormControl mb={2}>
+                <FormLabel htmlFor="Priority">Priority</FormLabel>
+                <Input
+                  id="Priority"
+                  value={newNote.Priority}
+                  onChange={(e) => this.handleInputChange(e, "Priority")}
+                />
+              </FormControl>
+
+              <FormControl mb={2}>
+                <FormLabel htmlFor="Status">Status</FormLabel>
+                <Input
+                  id="Status"
+                  value={newNote.Status}
+                  onChange={(e) => this.handleInputChange(e, "Status")}
+                />
+              </FormControl>
+
+              <FormControl mb={2}>
+                <FormLabel htmlFor="Creation_Timestamp">
+                  Creation Timestamp
+                </FormLabel>
+                <Input
+                  id="Creation_Timestamp"
+                  value={newNote.Creation_Timestamp}
+                  onChange={(e) =>
+                    this.handleInputChange(e, "Creation_Timestamp")
+                  }
+                />
+              </FormControl>
+
+              <FormControl mb={2}>
+                <FormLabel htmlFor="Last_Updated_Timestamp">
+                  Last Updated Timestamp
+                </FormLabel>
+                <Input
+                  id="Last_Updated_Timestamp"
+                  value={newNote.Last_Updated_Timestamp}
+                  onChange={(e) =>
+                    this.handleInputChange(e, "Last_Updated_Timestamp")
+                  }
+                />
+              </FormControl>
             </Box>
 
+            {/* 添加记录按钮 */}
+            <Button colorScheme="blue" onClick={() => this.addClick()}>
+              Add Record
+            </Button>
+
+            {/* 显示已有的记录 */}
             {notes.length === 0 ? (
               <Text>No notes available</Text>
             ) : (
@@ -142,10 +253,6 @@ class App extends Component<AppProps, AppState> {
                 </Box>
               ))
             )}
-
-            <Button colorScheme="blue" onClick={() => this.addClick()}>
-              Add Record
-            </Button>
           </Box>
         </GridItem>
       </Grid>
