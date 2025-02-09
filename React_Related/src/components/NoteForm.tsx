@@ -10,7 +10,7 @@ import {
   Select,
   FormErrorMessage,
 } from "@chakra-ui/react";
-import { Note } from "../types"; // 引入 types.ts 中的 Note 类型
+import { Note } from "../types";
 
 interface NoteFormProps {
   newNote: Note;
@@ -26,31 +26,21 @@ const NoteForm: React.FC<NoteFormProps> = ({
   handleInputChange,
   addClick,
 }) => {
-  // 校验逻辑
-  const validateTitle = (title: string) => {
-    return title.length === 0 || title.length > 100;
-  };
-
-  const validateDescription = (description: string) => {
-    return description.length > 500;
-  };
-
-  const validateDueDate = (dueDate: string) => {
-    // 简单的正则检查日期格式 (DD/MM/YYYY)
-    const regex = /^([0-2][0-9]|(3)[0-1])\/(0[1-9]|1[0-2])\/([0-9]{4})$/;
-    return !regex.test(dueDate);
-  };
+  const validateTitle = (title: string) =>
+    title.length === 0 || title.length > 100;
+  const validateDescription = (description: string) => description.length > 500;
+  const validateDueDate = (dueDate: string) =>
+    !/^([0-2][0-9]|(3)[0-1])\/(0[1-9]|1[0-2])\/([0-9]{4})$/.test(dueDate);
 
   return (
     <Box mb={4}>
-      {/* Title */}
       <FormControl mb={2} isInvalid={validateTitle(newNote.Title)}>
         <FormLabel htmlFor="Title">Title</FormLabel>
         <Input
           id="Title"
           value={newNote.Title}
           onChange={(e) => handleInputChange(e, "Title")}
-          maxLength={100} // 限制最大输入字符数
+          maxLength={100}
         />
         {validateTitle(newNote.Title) && (
           <FormErrorMessage>
@@ -59,14 +49,13 @@ const NoteForm: React.FC<NoteFormProps> = ({
         )}
       </FormControl>
 
-      {/* Description */}
       <FormControl mb={2} isInvalid={validateDescription(newNote.Description)}>
         <FormLabel htmlFor="Description">Description</FormLabel>
         <Input
           id="Description"
           value={newNote.Description}
           onChange={(e) => handleInputChange(e, "Description")}
-          maxLength={500} // 限制最大输入字符数
+          maxLength={500}
         />
         {validateDescription(newNote.Description) && (
           <FormErrorMessage>
@@ -75,14 +64,13 @@ const NoteForm: React.FC<NoteFormProps> = ({
         )}
       </FormControl>
 
-      {/* Due Date */}
       <FormControl mb={2} isInvalid={validateDueDate(newNote.Due_date)}>
         <FormLabel htmlFor="Due_date">Due Date</FormLabel>
         <Input
           id="Due_date"
           value={newNote.Due_date}
           onChange={(e) => handleInputChange(e, "Due_date")}
-          placeholder="DD/MM/YYYY" // 提示用户输入格式
+          placeholder="DD/MM/YYYY"
         />
         {validateDueDate(newNote.Due_date) && (
           <FormErrorMessage>
@@ -91,7 +79,6 @@ const NoteForm: React.FC<NoteFormProps> = ({
         )}
       </FormControl>
 
-      {/* Priority */}
       <FormControl mb={2}>
         <FormLabel htmlFor="Priority">Priority</FormLabel>
         <Select
@@ -105,7 +92,6 @@ const NoteForm: React.FC<NoteFormProps> = ({
         </Select>
       </FormControl>
 
-      {/* Status */}
       <FormControl mb={2}>
         <FormLabel htmlFor="Status">Status</FormLabel>
         <Select

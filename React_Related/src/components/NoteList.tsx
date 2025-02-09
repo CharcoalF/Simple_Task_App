@@ -1,8 +1,9 @@
 // components/NoteList.tsx
 // 用于显示笔记列表和删除按钮
+// components/NoteList.tsx
 import React from "react";
 import { Box, Text, Button } from "@chakra-ui/react";
-import { Note } from "../types"; // 引入 types.ts 中的 Note 类型
+import { Note } from "../types";
 
 interface NoteListProps {
   notes: Note[];
@@ -29,8 +30,8 @@ const NoteList: React.FC<NoteListProps> = ({ notes, deleteClick }) => {
             <Button
               colorScheme="red"
               onClick={() => {
-                console.log("Deleting note with ID:", note.id); // 添加日志
-                deleteClick(note.id); // 调用删除方法
+                console.log("Deleting note with ID:", note.id);
+                deleteClick(note.id);
               }}
             >
               Delete Record

@@ -1,20 +1,19 @@
 // Reference: https://v2.chakra-ui.com/docs/components/button/usage
 // src/App.tsx
-// src/App.tsx
 import React, { Component } from "react";
 import { Grid, GridItem, Box, Text } from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
 import NoteForm from "./components/NoteForm";
 import NoteList from "./components/NoteList";
 import { Note } from "./types";
-import SortSelector from "./components/SortSelector"; // 引入 SortSelector
-import FilterSelector from "./components/FilterSelector"; // 引入 FilterSelector
+import SortSelector from "./components/SortSelector";
+import FilterSelector from "./components/FilterSelector";
 
 interface AppState {
   notes: Note[];
   newNote: Note;
   sortOrder: string;
-  filters: { [key: string]: string }; // 筛选条件对象
+  filters: { [key: string]: string };
 }
 
 class App extends Component<{}, AppState> {
@@ -32,8 +31,8 @@ class App extends Component<{}, AppState> {
         Creation_Timestamp: "",
         Last_Updated_Timestamp: "",
       },
-      sortOrder: "", // 默认排序条件
-      filters: {}, // 默认没有筛选条件
+      sortOrder: "",
+      filters: {},
     };
   }
 
@@ -86,7 +85,7 @@ class App extends Component<{}, AppState> {
   }
 
   async deleteClick(id: string) {
-    console.log("Delete button clicked, ID:", id); // 添加日志，查看传递的 ID 是否正确
+    console.log("Delete button clicked, ID:", id);
     try {
       const response = await fetch(
         this.API_URL + "/api/React_Related/DeleteNote",
@@ -100,11 +99,11 @@ class App extends Component<{}, AppState> {
       );
 
       const result = await response.json();
-      console.log("Delete result:", result); // 打印后端返回的结果
+      console.log("Delete result:", result);
 
       if (response.ok) {
         alert(result.message);
-        this.refreshNotes(); // 刷新笔记列表
+        this.refreshNotes();
       } else {
         alert("Error deleting note: " + result.message);
       }
@@ -122,7 +121,7 @@ class App extends Component<{}, AppState> {
     this.setState((prevState) => ({
       filters: {
         ...prevState.filters,
-        [filter]: value, // 更新筛选条件
+        [filter]: value,
       },
     }));
   };
@@ -130,7 +129,6 @@ class App extends Component<{}, AppState> {
   render() {
     const { notes, newNote, sortOrder, filters } = this.state;
 
-    // 根据筛选条件过滤笔记
     let filteredNotes = notes;
     if (filters.Status) {
       filteredNotes = filteredNotes.filter(
@@ -165,23 +163,19 @@ class App extends Component<{}, AppState> {
               Notes
             </Text>
 
-            {/* 渲染 SortSelector 组件 */}
             <SortSelector
               onSelectSortOrder={this.handleSelectSortOrder}
               sortOrder={sortOrder}
             />
 
-            {/* 渲染 FilterSelector 组件 */}
             <FilterSelector onSelectFilter={this.handleSelectFilter} />
 
-            {/* 使用 NoteForm 组件 */}
             <NoteForm
               newNote={newNote}
-              handleInputChange={this.handleInputChange} // 修复此行
+              handleInputChange={this.handleInputChange}
               addClick={() => this.addClick()}
             />
 
-            {/* 使用 NoteList 组件 */}
             <NoteList notes={filteredNotes} deleteClick={this.deleteClick} />
           </Box>
         </GridItem>

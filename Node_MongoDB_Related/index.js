@@ -1,13 +1,15 @@
 // Reference: https://www.mongodb.com/products/platform/cloud
 // add API method
+// server.js
 const Express = require("express");
 const MongoClient = require("mongodb").MongoClient;
 const cors = require("cors");
 const multer = require("multer");
+const { ObjectId } = require('mongodb');
 
 var app = Express();
 app.use(cors());
-app.use(Express.json()); // deal with JSON request
+app.use(Express.json()); // Handle JSON requests
 
 var CONNECTION_STRING = "mongodb+srv://admin:admin123456@cluster0.t5rdo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 var DATABASENAME = "Simple_Task_Database";
@@ -27,13 +29,18 @@ app.listen(55038, async () => {
     await connectToDatabase();
 });
 
-// Post route to add a note
+// Add a new note
 app.post('/api/React_Related/AddNotes', multer().none(), async (request, response) => {
     try {
-        const numOfDocs = await database.collection("Simple_Task_Collection").countDocuments({});
+        const { Title, Description, Due_date, Priority, Status } = request.body;
         const result = await database.collection("Simple_Task_Collection").insertOne({
-            id: (numOfDocs + 1).toString(),
-            description: request.body.newNotes
+            Title,
+            Description,
+            Due_date,
+            Priority,
+            Status,
+            Creation_Timestamp: new Date(),
+            Last_Updated_Timestamp: new Date(),
         });
 
         response.json({ message: "Added Successfully", result });
@@ -43,11 +50,16 @@ app.post('/api/React_Related/AddNotes', multer().none(), async (request, respons
     }
 });
 
-// Delete route to delete a note
+// Delete a note
 app.delete('/api/React_Related/DeleteNote', async (request, response) => {
-    const { id } = request.body; // assuming the id is sent in the body of the DELETE request
+    const { id } = request.body;
+    if (!ObjectId.isValid(id)) {
+        return response.status(400).json({ message: "Invalid ID format" });
+    }
+
     try {
-        const result = await database.collection("Simple_Task_Collection").deleteOne({ id: id });
+        const objectId = new ObjectId(id);
+        const result = await database.collection("Simple_Task_Collection").deleteOne({ _id: objectId });
 
         if (result.deletedCount === 1) {
             response.json({ message: "Note deleted successfully" });
@@ -60,7 +72,7 @@ app.delete('/api/React_Related/DeleteNote', async (request, response) => {
     }
 });
 
-// Get route to fetch all notes
+// Get all notes
 app.get('/api/React_Related/GetNote', async (request, response) => {
     try {
         const notes = await database.collection("Simple_Task_Collection").find({}).toArray();
