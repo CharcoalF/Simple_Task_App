@@ -1,5 +1,6 @@
 // Reference: https://v2.chakra-ui.com/docs/components/button/usage
 // src/App.tsx
+// src/App.tsx
 import React, { Component } from "react";
 import { Grid, GridItem, Box, Text } from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
@@ -7,14 +8,12 @@ import NoteForm from "./components/NoteForm";
 import NoteList from "./components/NoteList";
 import { Note } from "./types";
 import SortSelector from "./components/SortSelector"; // 引入 SortSelector
-//import PlatformSelector from "./components/PlatformSelector"; // 引入 PlatformSelector
 import FilterSelector from "./components/FilterSelector"; // 引入 FilterSelector
 
 interface AppState {
   notes: Note[];
   newNote: Note;
   sortOrder: string;
-  //selectedPlatform: Platform | null;
   filters: { [key: string]: string }; // 筛选条件对象
 }
 
@@ -34,7 +33,6 @@ class App extends Component<{}, AppState> {
         Last_Updated_Timestamp: "",
       },
       sortOrder: "", // 默认排序条件
-      //selectedPlatform: null, // 默认没有选择平台
       filters: {}, // 默认没有筛选条件
     };
   }
@@ -56,7 +54,7 @@ class App extends Component<{}, AppState> {
   }
 
   handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     field: keyof Note
   ) => {
     const { value } = e.target;
@@ -88,28 +86,37 @@ class App extends Component<{}, AppState> {
   }
 
   async deleteClick(id: string) {
-    fetch(this.API_URL + "/api/React_Related/DeleteNote", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id }),
-    })
-      .then((res) => res.json())
-      .then((result) => {
+    console.log("Delete button clicked, ID:", id); // 添加日志，查看传递的 ID 是否正确
+    try {
+      const response = await fetch(
+        this.API_URL + "/api/React_Related/DeleteNote",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id }),
+        }
+      );
+
+      const result = await response.json();
+      console.log("Delete result:", result); // 打印后端返回的结果
+
+      if (response.ok) {
         alert(result.message);
-        this.refreshNotes();
-      })
-      .catch((error) => console.error("Error deleting note:", error));
+        this.refreshNotes(); // 刷新笔记列表
+      } else {
+        alert("Error deleting note: " + result.message);
+      }
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      alert("An error occurred while deleting the note.");
+    }
   }
 
   handleSelectSortOrder = (sortOrder: string) => {
     this.setState({ sortOrder });
   };
-
-  //handleSelectPlatform = (platform: Platform) => {
-  //  this.setState({ selectedPlatform: platform });
-  //};
 
   handleSelectFilter = (filter: string, value: string) => {
     this.setState((prevState) => ({
@@ -164,19 +171,13 @@ class App extends Component<{}, AppState> {
               sortOrder={sortOrder}
             />
 
-            {/* 渲染 PlatformSelector 组件 */}
-            {/* <PlatformSelector
-              onSelectPlatform={this.handleSelectPlatform}
-              selectedPlatform={selectedPlatform}
-            /> */}
-
             {/* 渲染 FilterSelector 组件 */}
             <FilterSelector onSelectFilter={this.handleSelectFilter} />
 
             {/* 使用 NoteForm 组件 */}
             <NoteForm
               newNote={newNote}
-              handleInputChange={this.handleInputChange}
+              handleInputChange={this.handleInputChange} // 修复此行
               addClick={() => this.addClick()}
             />
 

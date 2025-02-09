@@ -8,7 +8,7 @@ const NavBar = () => {
     <HStack justifyContent="space-between" padding="10px">
       {" "}
       {/*Change switcher's position to right side but also keep padding so that it's not on the right boundary*/}
-      <Image src={logo} /> {/*modify NavBar logo size: boxSize="100px"*/}
+      {/* <Image src={logo} /> modify NavBar logo size: boxSize="100px" */}
       {/*<Text>NavBar</Text>*/} {/* description for NavBar*/}
       <ColorModeSwitch /> {/*Switcher: dark/light mode*/}
     </HStack>

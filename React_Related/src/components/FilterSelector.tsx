@@ -23,19 +23,11 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({ onSelectFilter }) => {
         </MenuItem>
 
         {/* Filter by Priority */}
-        <MenuItem onClick={() => onSelectFilter("Priority", "High")}>
-          Priority: High
-        </MenuItem>
         <MenuItem onClick={() => onSelectFilter("Priority", "Low")}>
           Priority: Low
         </MenuItem>
-
-        {/* Filter by Due Date */}
-        <MenuItem onClick={() => onSelectFilter("Due_date", "2025-01-01")}>
-          Due Date: 2025-01-01
-        </MenuItem>
-        <MenuItem onClick={() => onSelectFilter("Due_date", "2025-02-01")}>
-          Due Date: 2025-02-01
+        <MenuItem onClick={() => onSelectFilter("Priority", "High")}>
+          Priority: High
         </MenuItem>
       </MenuList>
     </Menu>

@@ -119,28 +119,6 @@ const NoteForm: React.FC<NoteFormProps> = ({
         </Select>
       </FormControl>
 
-      {/* Creation Timestamp */}
-      <FormControl mb={2}>
-        <FormLabel htmlFor="Creation_Timestamp">Creation Timestamp</FormLabel>
-        <Input
-          id="Creation_Timestamp"
-          value={newNote.Creation_Timestamp}
-          onChange={(e) => handleInputChange(e, "Creation_Timestamp")}
-        />
-      </FormControl>
-
-      {/* Last Updated Timestamp */}
-      <FormControl mb={2}>
-        <FormLabel htmlFor="Last_Updated_Timestamp">
-          Last Updated Timestamp
-        </FormLabel>
-        <Input
-          id="Last_Updated_Timestamp"
-          value={newNote.Last_Updated_Timestamp}
-          onChange={(e) => handleInputChange(e, "Last_Updated_Timestamp")}
-        />
-      </FormControl>
-
       <Button colorScheme="blue" onClick={addClick}>
         Add Record
       </Button>

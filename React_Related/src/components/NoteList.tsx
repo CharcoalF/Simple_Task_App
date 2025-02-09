@@ -26,7 +26,13 @@ const NoteList: React.FC<NoteListProps> = ({ notes, deleteClick }) => {
             <Text>Creation Timestamp: {note.Creation_Timestamp}</Text>
             <Text>Last Timestamp: {note.Last_Updated_Timestamp}</Text>
 
-            <Button colorScheme="red" onClick={() => deleteClick(note.id)}>
+            <Button
+              colorScheme="red"
+              onClick={() => {
+                console.log("Deleting note with ID:", note.id); // 添加日志
+                deleteClick(note.id); // 调用删除方法
+              }}
+            >
               Delete Record
             </Button>
           </Box>
