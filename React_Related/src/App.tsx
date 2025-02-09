@@ -13,7 +13,6 @@ function App() {
       }}
     >
       <GridItem area="nav">
-        {" "}
         {/*change NavBar color: bg="coral" */}
         <NavBar /> {/*from NavBar component*/}
       </GridItem>
