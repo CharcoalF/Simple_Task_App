@@ -9,9 +9,11 @@ import {
   Input,
   FormControl,
   FormLabel,
+  Select,
 } from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
 import { Component } from "react";
+import SortSelector from "./components/SortSelector"; // 引入SortSelector组件
 
 // 定义 Note 类型
 interface Note {
@@ -31,6 +33,8 @@ interface AppProps {}
 interface AppState {
   notes: Note[]; // 用来存储笔记的数组
   newNote: Note; // 新的记录数据
+  sortOrder: string; // 用于排序
+  filter: { [key: string]: string }; // 筛选条件
 }
 
 class App extends Component<AppProps, AppState> {
@@ -48,6 +52,12 @@ class App extends Component<AppProps, AppState> {
         Status: "",
         Title: "",
       },
+      sortOrder: "", // 默认排序
+      filter: {
+        Due_date: "",
+        Priority: "",
+        Status: "",
+      },
     };
   }
 
@@ -57,6 +67,7 @@ class App extends Component<AppProps, AppState> {
     this.refreshNotes();
   }
 
+  // 获取数据并刷新
   async refreshNotes() {
     try {
       const response = await fetch(this.API_URL + "/api/React_Related/GetNote");
@@ -120,8 +131,58 @@ class App extends Component<AppProps, AppState> {
       .catch((error) => console.error("Error deleting note:", error));
   }
 
+  // 选择排序顺序
+  onSelectSortOrder = (sortOrder: string) => {
+    this.setState({ sortOrder }, () => {
+      this.refreshNotes(); // 选择排序后刷新笔记
+    });
+  };
+
+  // 处理筛选变化
+  handleFilterChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    field: string
+  ) => {
+    const { value } = e.target;
+    this.setState(
+      (prevState) => ({
+        filter: {
+          ...prevState.filter,
+          [field]: value, // 动态设置筛选条件
+        },
+      }),
+      () => {
+        this.refreshNotes(); // 筛选后刷新笔记
+      }
+    );
+  };
+
   render() {
-    const { notes, newNote } = this.state;
+    const { notes, newNote, sortOrder, filter } = this.state;
+
+    // 根据排序和筛选条件过滤和排序笔记
+    let filteredNotes = notes.filter((note) => {
+      return (
+        (filter.Due_date ? note.Due_date.includes(filter.Due_date) : true) &&
+        (filter.Priority ? note.Priority.includes(filter.Priority) : true) &&
+        (filter.Status ? note.Status.includes(filter.Status) : true)
+      );
+    });
+
+    if (sortOrder) {
+      filteredNotes = filteredNotes.sort((a, b) => {
+        if (sortOrder === "name") {
+          return a.Title.localeCompare(b.Title);
+        }
+        if (sortOrder === "-added") {
+          return (
+            new Date(b.Creation_Timestamp).getTime() -
+            new Date(a.Creation_Timestamp).getTime()
+          );
+        }
+        return 0;
+      });
+    }
 
     return (
       <Grid
@@ -223,11 +284,48 @@ class App extends Component<AppProps, AppState> {
               Add Record
             </Button>
 
+            {/* Sort and Filter Options */}
+            <Box mt={4}>
+              <SortSelector
+                onSelectSortOrder={this.onSelectSortOrder}
+                sortOrder={sortOrder}
+              />
+              <Select
+                placeholder="Filter by Due Date"
+                value={filter.Due_date}
+                onChange={(e) => this.handleFilterChange(e, "Due_date")}
+                mt={2}
+              >
+                <option value="2025-02-09">2025-02-09</option>
+                {/* Add more filter options here */}
+              </Select>
+
+              <Select
+                placeholder="Filter by Priority"
+                value={filter.Priority}
+                onChange={(e) => this.handleFilterChange(e, "Priority")}
+                mt={2}
+              >
+                <option value="High">High</option>
+                <option value="Low">Low</option>
+              </Select>
+
+              <Select
+                placeholder="Filter by Status"
+                value={filter.Status}
+                onChange={(e) => this.handleFilterChange(e, "Status")}
+                mt={2}
+              >
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
+              </Select>
+            </Box>
+
             {/* 显示已有的记录 */}
-            {notes.length === 0 ? (
+            {filteredNotes.length === 0 ? (
               <Text>No notes available</Text>
             ) : (
-              notes.map((note) => (
+              filteredNotes.map((note) => (
                 <Box
                   key={note.id}
                   mb={3}
