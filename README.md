@@ -10,6 +10,7 @@ Before running this application, make sure you have the following installed:
 
 - **Node.js** (version >= 14)
 - **MongoDB** (or MongoDB Atlas account if using cloud MongoDB)
+- **Chakra** (version 2) https://v2.chakra-ui.com/getting-started
 
 ### Frontend Setup
 
