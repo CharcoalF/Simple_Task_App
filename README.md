@@ -144,9 +144,24 @@ If you use **MongoDB Atlas**, make sure you update the MongoDB connection string
 ### Approach
 
 - **Frontend**: The frontend is built with React and uses Chakra UI components for the UI. React hooks are used for managing state, and `fetch` is used to communicate with the backend API.
+  ![Frontend Architecture](./img/dark.png)
+  ![Frontend Architecture](./img/light.png)
 - **Backend**: The backend is built using Express.js and MongoDB as the database. MongoDB is used to store the task notes and to perform CRUD operations.
+  ![Frontend Architecture](./img/DB.png)
+  ![Frontend Architecture](./img/Back.png)
 - **Validation**: Some basic validation is done on the frontend to ensure that the fields (such as `Title`, `Description`, `Due_date`) follow the correct format.
-- **Sorting & Filtering**: The frontend includes sorting by date and filtering by task status, priority, and due date.
+  ![Frontend Architecture](./img/Error_Handling.png)
+- **Sorting**: The frontend includes sorting by task status, priority, and due date.
+  ![Frontend Architecture](./img/Sort_by.png)
+- **Filtering**: The frontend includes filtering by task status, priority, and due date.
+  ![Frontend Architecture](./img/Filter_by.png)
+- **Drop-down List**: The frontend includes options for users to select.
+  ![Frontend Architecture](./img/Drop-down.png)
+  ![Frontend Architecture](./img/Drop_down2.png)
+- **Add record**:
+  ![Frontend Architecture](./img/Add_record.png)
+- **Delete record**:
+  ![Frontend Architecture](./img/Delete_record.png)
 
 ### Assumptions
 
