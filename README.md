@@ -27,8 +27,18 @@ Before running this application, make sure you have the following installed:
 
 3. **Start the development server:**
 
+   _Note: You shall enter React_Related path to launch the web_
+
+   - Go into the right path.
+
    ```bash
-   npm start
+   cd React_Related
+   ```
+
+   - Then launch web server.
+
+   ```bash
+   npm run dev
    ```
 
    This will run the React frontend locally on [http://localhost:3000](http://localhost:3000).
@@ -43,8 +53,18 @@ Before running this application, make sure you have the following installed:
 
 2. **Start the backend server:**
 
+   _Note: You shall enter Node_MongoDB_Related path to start the Database._
+
+   - Go into the right path.
+
    ```bash
-   node server.js
+   cd Node_MongoDB_Related
+   ```
+
+   - Then launch Mongo DB server.
+
+   ```bash
+   node index.js
    ```
 
    The backend server will run on [http://localhost:55038](http://localhost:55038).
