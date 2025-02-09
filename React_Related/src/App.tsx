@@ -1,5 +1,5 @@
 // Reference: https://v2.chakra-ui.com/docs/components/button/usage
-import { Box, Text, Grid, GridItem, Show } from "@chakra-ui/react";
+import { Box, Text, Grid, GridItem, Show, Button } from "@chakra-ui/react";
 import NavBar from "./components/NavBar";
 import { Component } from "react";
 
@@ -32,20 +32,56 @@ class App extends Component<AppProps, AppState> {
 
   API_URL = "http://localhost:55038"; // 后端 API URL
 
-  // 组件挂载后自动调用的函数，用于加载笔记
   componentDidMount() {
     this.refreshNotes();
   }
 
-  // 从 API 获取笔记数据并更新 state
   async refreshNotes() {
     try {
       const response = await fetch(this.API_URL + "/api/React_Related/GetNote");
-      const data: Note[] = await response.json(); // 获取数据并转换为 Note 类型
-      this.setState({ notes: data }); // 更新 state
+      const data: Note[] = await response.json();
+      this.setState({ notes: data });
     } catch (error) {
       console.error("Error fetching notes:", error);
     }
+  }
+
+  // 添加记录
+  async addClick() {
+    // 确保获取的是正确的输入框值
+    var newNotes = (document.getElementById("newRecord") as HTMLInputElement)
+      .value;
+    const data = new FormData();
+    data.append("newNotes", newNotes);
+
+    fetch(this.API_URL + "/api/React_Related/AddNotes", {
+      method: "POST",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        alert(result.message);
+        this.refreshNotes();
+      })
+      .catch((error) => console.error("Error adding note:", error));
+  }
+
+  // 删除记录
+  async deleteClick(id: string) {
+    // 确保 id 是 string 类型
+    fetch(this.API_URL + "/api/React_Related/DeleteNote", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        alert(result.message);
+        this.refreshNotes();
+      })
+      .catch((error) => console.error("Error deleting note:", error));
   }
 
   render() {
@@ -55,11 +91,11 @@ class App extends Component<AppProps, AppState> {
       <Grid
         templateAreas={{
           base: `"nav" "main"`,
-          lg: `"nav nav" "aside main"`, // 对于较大的屏幕
+          lg: `"nav nav" "aside main"`,
         }}
       >
         <GridItem area="nav">
-          <NavBar /> {/* 导航栏组件 */}
+          <NavBar />
         </GridItem>
 
         <Show above="lg">
@@ -71,8 +107,14 @@ class App extends Component<AppProps, AppState> {
             <Text fontSize="2xl" mb={4}>
               Notes
             </Text>
+
+            {/* 输入框用于添加记录 */}
+            <Box mb={4}>
+              <input id="newRecord" type="text" placeholder="Enter new note" />
+            </Box>
+
             {notes.length === 0 ? (
-              <Text>No notes available</Text> // 如果没有笔记，显示一条消息
+              <Text>No notes available</Text>
             ) : (
               notes.map((note) => (
                 <Box
@@ -90,9 +132,20 @@ class App extends Component<AppProps, AppState> {
                   <Text>Priority: {note.Priority}</Text>
                   <Text>Creation Timestamp: {note.Creation_Timestamp}</Text>
                   <Text>Last Timestamp: {note.Last_Updated_Timestamp}</Text>
+
+                  <Button
+                    colorScheme="red"
+                    onClick={() => this.deleteClick(note.id)}
+                  >
+                    Delete Record
+                  </Button>
                 </Box>
               ))
             )}
+
+            <Button colorScheme="blue" onClick={() => this.addClick()}>
+              Add Record
+            </Button>
           </Box>
         </GridItem>
       </Grid>
